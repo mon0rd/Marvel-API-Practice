@@ -1,0 +1,47 @@
+@use "/src/styles/base/variables.sass" as *
+
+.RandomChar
+    display: flex
+    margin-top: 50px
+    height: 250px
+    box-shadow: 5px 5px 20px 0px rgba(0, 0, 0, 0.25)
+    .Char
+        display: flex
+        width: 50%
+        padding: 35px 35px 35px 40px
+        &_descr
+            margin-left: 30px
+        &_text
+            max-width: 265px
+            height: 90px
+            letter-spacing: 0
+            line-height: 18px
+            margin-top: 10px
+            font-size: 14px
+            font-weight: 400
+            overflow: hidden
+        &_btns
+            display: flex
+            justify-content: space-between
+            width: 232px
+            margin-top: 13px
+    .TryIt
+        display: flex
+        flex-direction: column
+        position: relative
+        width: 50%
+        padding: 35px 0px 35px 40px
+        background-color: $bg-black
+        color: white
+        font-size: 24px
+        font-weight: 700
+        line-height: 32px
+        :nth-child(2)
+            margin-top: 33px
+            line-height: 32px
+        .red_btn
+            margin-top: 13px
+        img    
+            position: absolute
+            bottom: 14px
+            right: -36px

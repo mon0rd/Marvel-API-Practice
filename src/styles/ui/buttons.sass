@@ -1,0 +1,33 @@
+@use "/src/styles/base/variables.sass" as *
+
+@mixin general    
+    color: white
+    border: none
+    height: 38px    
+    text-transform: uppercase
+    cursor: pointer
+    clip-path: polygon(91px 38px, 101px 28px, 101px 0px, 101px 0px, 10px 0px, 0px 10px, 0px 38px, 0px 38px)
+    font-size: 14px
+    font-weight: 400
+    transition: all 0.2s
+    &:hover
+        clip-path: polygon(101px 38px, 101px 38px, 101px 10px, 91px 0px, 0px 0px, 0px 0px, 0px 28px, 10px 38px)
+        transform: translateY(-2px)
+
+.red_btn
+    @include general
+    background-color: $red
+    width: 101px
+
+.gray_btn
+    @include general
+    background-color: $bg-gray
+    width: 101px
+
+.red_wide_btn
+    @include general
+    background-color: $red
+    width: 170px
+    clip-path: polygon(160px 38px, 170px 28px, 170px 0px, 170px 0px, 10px 0px, 0px 10px, 0px 38px, 0px 38px)
+    &:hover
+        clip-path: polygon(170px 38px, 170px 38px, 170px 10px, 160px 0px, 0px 0px, 0px 0px, 0px 28px, 10px 38px)
