@@ -1,10 +1,17 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "/src/styles/index.sass";
-import App from "/src/Components/App/App.jsx";
+
+import Header from "/src/Components/Header/Header.jsx";
+import CharactersApp from "/src/Components/Characters/CharactersApp/CharactersApp.jsx";
+import ComicsApp from "/src/Components/Comics/ComicsApp/ComicsApp.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <App />
+    <div className="wrapper">
+      <Header />
+      {/* <CharactersApp /> */}
+      <ComicsApp />
+    </div>
   </StrictMode>
 );

@@ -1,4 +1,4 @@
-import "/src/Components/RandomChar/RandomChar.sass";
+import "/src/Components/Characters/RandomChar/RandomChar.sass";
 
 function RandomChar() {
   return (
