@@ -18,8 +18,8 @@ class CharactersApp extends Component {
         <RandomChar />
         <div className="Char_wrapper">
           <CharList />
-          {/* <CharInfo /> */}
-          <CharInfoPlaceholder />
+          <CharInfo />
+          {/* <CharInfoPlaceholder /> */}
           <img
             src="/src/assets/Characters/img/png/bg_vision.png"
             alt="vision"

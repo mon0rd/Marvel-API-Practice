@@ -10,8 +10,8 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <div className="wrapper">
       <Header />
-      {/* <CharactersApp /> */}
-      <ComicsApp />
+      <CharactersApp />
+      {/* <ComicsApp /> */}
     </div>
   </StrictMode>
 );
