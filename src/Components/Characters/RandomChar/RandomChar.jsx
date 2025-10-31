@@ -3,33 +3,59 @@ import { Component } from "react";
 import MarvelService from "/src/services/MarvelService.jsx";
 
 class RandomChar extends Component {
-  constructor(props) {
-    super(props);
-    this.updateChar();
-  }
-
   state = {
-    char: {},
+    char: { name: "123" },
   };
 
   marvelService = new MarvelService();
 
+  onError = () => {
+    this.setState({ error: true });
+  };
+
   onCharLoaded = (char) => {
+    console.log("update");
     this.setState({ char });
   };
 
+  componentDidMount() {
+    this.updateChar();
+    console.log("mount");
+  }
+  componentWillUnmount() {
+    console.log("unmount");
+  }
+
   updateChar = () => {
     const id = Math.floor(Math.random() * (1564 - 1 + 1) + 1);
-    console.log(id);
-    this.marvelService.getCharacter(id).then(this.onCharLoaded);
+    if (this.state.error || this.state.char.name) {
+      this.setState({ char: {}, error: false });
+      this.marvelService
+        .getCharacter(id)
+        .then(this.onCharLoaded)
+        .catch(this.onError);
+    }
   };
 
   render() {
+    console.log("render");
     const {
       char: { name, text, thumbnail, homepage, wiki },
+      error,
     } = this.state;
-    let randomChar = <div class="spinner"></div>;
-    if (thumbnail) {
+    let randomChar = <div className="spinner"></div>;
+
+    if (error) {
+      randomChar = (
+        <>
+          <img
+            src="/src/assets/error.gif"
+            style={{ width: "100%" }}
+            alt="error"
+          />
+        </>
+      );
+    } else if (thumbnail) {
       randomChar = (
         <>
           <img src={thumbnail} alt={name} />
@@ -50,6 +76,7 @@ class RandomChar extends Component {
         </>
       );
     }
+
     return (
       <div className="RandomChar">
         <div className="Char">{randomChar}</div>
@@ -59,7 +86,9 @@ class RandomChar extends Component {
             Do you want to get to know him better?
           </span>
           <span>Or choose another one</span>
-          <button className="red_btn">try it</button>
+          <button onClick={this.updateChar} className="red_btn">
+            try it
+          </button>
           <img
             src="/src/assets/Characters/img/png/mjolnir_shield.png"
             alt="mjolnir_shield"
