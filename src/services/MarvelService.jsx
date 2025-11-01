@@ -1,6 +1,6 @@
 class MarvelService {
-  _apiBase = "https://gateway.marvel.com:443/v1/public/";
-  _apiKey = "apikey=cba1c51d5d5b6b7bfd22fd45364c9b77";
+  _apiBase = "https://marvel-server-zeta.vercel.app/";
+  _apiKey = "apikey=d4eecb0c66dedbfae4eab45d312fc1df";
   getResource = async (url) => {
     let res = await fetch(url);
     if (!res.ok) {
@@ -9,9 +9,9 @@ class MarvelService {
     return await res.json();
   };
 
-  getAllCharacters = async () => {
+  getAllCharacters = async (offset) => {
     const res = await this.getResource(
-      `${this._apiBase}characters?limit=9&offset=910&${this._apiKey}`
+      `${this._apiBase}characters?limit=9&offset=${offset}&${this._apiKey}`
     );
     return res.data.results.map(this._transormCharacter);
   };
@@ -30,6 +30,8 @@ class MarvelService {
       thumbnail: char.thumbnail.path + "." + char.thumbnail.extension,
       homepage: char.urls[0].url,
       wiki: char.urls[1].url,
+      comics: char.comics,
+      id: char.id,
     };
   };
 }

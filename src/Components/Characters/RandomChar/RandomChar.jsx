@@ -9,26 +9,13 @@ class RandomChar extends Component {
 
   marvelService = new MarvelService();
 
-  onError = () => {
-    this.setState({ error: true });
-  };
-
-  onCharLoaded = (char) => {
-    console.log("update");
-    this.setState({ char });
-  };
-
   componentDidMount() {
     this.updateChar();
-    console.log("mount");
-  }
-  componentWillUnmount() {
-    console.log("unmount");
   }
 
   updateChar = () => {
-    const id = Math.floor(Math.random() * (1564 - 1 + 1) + 1);
     if (this.state.error || this.state.char.name) {
+      const id = Math.floor(Math.random() * (19 - 1 + 1) + 1);
       this.setState({ char: {}, error: false });
       this.marvelService
         .getCharacter(id)
@@ -37,8 +24,15 @@ class RandomChar extends Component {
     }
   };
 
+  onCharLoaded = (char) => {
+    this.setState({ char });
+  };
+
+  onError = () => {
+    this.setState({ error: true });
+  };
+
   render() {
-    console.log("render");
     const {
       char: { name, text, thumbnail, homepage, wiki },
       error,
