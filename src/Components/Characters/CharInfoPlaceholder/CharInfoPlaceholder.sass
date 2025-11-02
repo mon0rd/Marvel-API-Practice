@@ -1,9 +1,20 @@
+@mixin pulse
+    @keyframes fade
+        0%
+            opacity: 1 
+        50%
+            opacity: 0.4
+        100%
+            opacity: 1             
+    animation: fade 1.5s ease-in-out .5s infinite
+    
 .CharInfoPlaceholder
     width: 425px
     height: 294px
     padding: 25px
     box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.25)
     text-align: center
+    background-color: white
     &_wrapper
         margin-top: 30px
         display: flex
@@ -14,12 +25,15 @@
         height: 40px
         border-radius: 100%
         background-color: #C4C4C4
+        @include pulse 
     &_bar
         margin-top: 15px        
         background-color: #C4C4C4
         width: 375px
         height: 35px
+        @include pulse 
         &_slim            
             background-color: #C4C4C4
             width: 326px
-            height: 16px
+            height: 16px        
+            @include pulse 

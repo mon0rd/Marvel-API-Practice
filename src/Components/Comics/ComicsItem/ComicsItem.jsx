@@ -1,6 +1,6 @@
 // import { useState } from "react";
 import { Component } from "react";
-import "/src/Components/Comics/ComicsItem/ComicsItem.sass";
+import "/src/components/comics/comicsItem/ComicsItem.sass";
 
 class ComicsItem extends Component {
   constructor(props) {

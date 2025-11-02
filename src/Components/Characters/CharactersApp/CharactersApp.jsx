@@ -1,20 +1,24 @@
-// import { useState } from "react";
 import { Component } from "react";
-import "/src/Components/Characters/CharactersApp/CharactersApp.sass";
+import "/src/components/characters/charactersApp/CharactersApp.sass";
 
-import RandomChar from "/src/Components/Characters/RandomChar/RandomChar.jsx";
-import CharList from "/src/Components/Characters/CharList/CharList.jsx";
-import CharInfo from "/src/Components/Characters/CharInfo/CharInfo.jsx";
-import CharInfoPlaceholder from "/src/Components/Characters/CharInfoPlaceholder/CharInfoPlaceholder.jsx";
+import RandomChar from "/src/components/characters/randomChar/RandomChar.jsx";
+import CharList from "/src/components/characters/charList/CharList.jsx";
+import CharInfo from "/src/components/characters/charInfo/CharInfo.jsx";
 
 class CharactersApp extends Component {
-  state = { selectedChar: null };
+  state = { selectedChar: null, decor: null };
 
   onCharSelect = (element) => {
     if (this.state.selectedChar && element.id === this.state.selectedChar.id) {
       this.setState({ selectedChar: null });
     } else {
       this.setState({ selectedChar: element });
+    }
+  };
+
+  showDecor = (decor) => {
+    if (!this.state.decor) {
+      this.setState({ decor });
     }
   };
 
@@ -26,17 +30,16 @@ class CharactersApp extends Component {
           <CharList
             onCharSelect={this.onCharSelect}
             selectedChar={this.state.selectedChar}
+            showDecor={this.showDecor}
           />
-          {this.state.selectedChar ? (
-            <CharInfo selectedChar={this.state.selectedChar} />
-          ) : (
-            <CharInfoPlaceholder />
-          )}
-          <img
-            src="/src/assets/Characters/img/png/bg_vision.png"
-            alt="vision"
-            className="Characters_decor"
-          />
+          <CharInfo selectedChar={this.state.selectedChar} />
+          {this.state.decor ? (
+            <img
+              src="/src/assets/Characters/img/png/bg_vision.png"
+              alt="vision"
+              className="Characters_decor"
+            />
+          ) : null}
         </div>
       </div>
     );

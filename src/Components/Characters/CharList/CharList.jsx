@@ -1,9 +1,12 @@
 import { Component } from "react";
-import "/src/Components/Characters/CharList/CharList.sass";
+import "/src/components/characters/charList/CharList.sass";
 import MarvelService from "/src/services/MarvelService.jsx";
 
 class CharList extends Component {
-  state = { error: false };
+  state = {
+    offset: 0,
+    error: false,
+  };
 
   marvelService = new MarvelService();
 
@@ -12,58 +15,69 @@ class CharList extends Component {
   }
 
   updateCharList = () => {
-    // if (this.state.error || this.state.char.name) {
-    const id = Math.floor(Math.random() * (19 - 1 + 1) + 1);
-    // this.setState({ char: {}, error: false });
     this.marvelService
-      .getAllCharacters(id)
+      .getAllCharacters(this.state.offset)
       .then(this.onCharListLoaded)
       .catch(this.onError);
-    // }
+    this.setState({ offset: this.state.offset + 9 });
   };
 
   onCharListLoaded = (charlist) => {
-    this.setState({ charlist });
+    // if (!this.state.charlist) {
+    //   this.setState({ charlist });
+    // }
+    // else if (this.state.charlist[0].id !== charlist[0].id) {//strictmode
+    // else {
+    this.setState({
+      charlist: this.state.charlist
+        ? [...this.state.charlist, ...charlist]
+        : charlist,
+    });
+    // }
+
+    if (!this.props.showDecor) {
+      this.props.showDecor(true);
+    }
   };
 
   formRenderedList = () => {
-    if (this.state.charlist) {
-      return this.state.charlist.map((element) => {
-        let classname = "CharList_card";
-        if (
-          this.props.selectedChar &&
-          element.id === this.props.selectedChar.id
-        ) {
-          classname = "CharList_card active";
-        }
-        return (
-          <div
-            onClick={() => this.props.onCharSelect(element)}
-            key={element.id}
-            className={classname}>
-            <img
-              src={element.thumbnail}
-              alt={element.name}
-              className="CharList_card_avatar"
-            />
-            <span className="CharList_card_name">{element.name}</span>
-          </div>
-        );
-      });
-    }
+    return this.state.charlist.map((element) => {
+      let classname = "CharList_card";
+      if (
+        this.props.selectedChar &&
+        element.id === this.props.selectedChar.id
+      ) {
+        classname = "CharList_card active";
+      }
+      return (
+        <div
+          onClick={() => this.props.onCharSelect(element)}
+          key={element.id}
+          className={classname}>
+          <img
+            src={element.thumbnail}
+            alt={element.name}
+            className="CharList_card_avatar"
+          />
+          <span className="CharList_card_name">{element.name}</span>
+        </div>
+      );
+    });
   };
 
   onError = () => {
     this.setState({ error: true });
+    this.props.showDecor(true);
   };
 
   render() {
     const { charlist, error } = this.state;
-    let renderedList = this.formRenderedList();
 
     return (
       <div className="CharList">
-        <div className="CharList_wrapper">{renderedList}</div>
+        <div className="CharList_wrapper">
+          {charlist ? this.formRenderedList() : null}
+        </div>
         {!charlist && !error ? <div className="spinner"></div> : null}
         {error ? (
           <>
@@ -75,7 +89,13 @@ class CharList extends Component {
             <button className="red_wide_btn">reload</button>
           </>
         ) : null}
-        {charlist ? <button className="red_wide_btn">load more</button> : null}
+        {charlist ? (
+          <button
+            onClick={() => this.updateCharList()}
+            className="red_wide_btn">
+            load more
+          </button>
+        ) : null}
       </div>
     );
   }

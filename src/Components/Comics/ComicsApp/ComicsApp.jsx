@@ -1,11 +1,11 @@
 // import { useState } from "react";
 import { Component } from "react";
-import "/src/Components/Comics/ComicsApp/ComicsApp.sass";
+import "/src/components/comics/comicsApp/ComicsApp.sass";
 
-import Banner from "/src/Components/Comics/Banner/Banner.jsx";
-import ComicsList from "/src/Components/Comics/ComicsList/ComicsList.jsx";
-import ComicsItem from "/src/Components/Comics/ComicsItem/ComicsItem.jsx";
-import ComicsCharPage from "/src/Components/Comics/ComicsCharPage/ComicsCharPage.jsx";
+import Banner from "/src/components/comics/banner/Banner.jsx";
+import ComicsList from "/src/components/comics/comicsList/ComicsList.jsx";
+import ComicsItem from "/src/components/comics/comicsItem/ComicsItem.jsx";
+import ComicsCharPage from "/src/components/comics/comicsCharPage/ComicsCharPage.jsx";
 
 class ComicsApp extends Component {
   constructor(props) {

@@ -1,4 +1,4 @@
-import "/src/Components/Characters/RandomChar/RandomChar.sass";
+import "/src/components/characters/randomChar/RandomChar.sass";
 import { Component } from "react";
 import MarvelService from "/src/services/MarvelService.jsx";
 
@@ -21,6 +21,7 @@ class RandomChar extends Component {
         .getCharacter(id)
         .then(this.onCharLoaded)
         .catch(this.onError);
+      // console.log(this.marvelService.getCharacter(id));
     }
   };
 

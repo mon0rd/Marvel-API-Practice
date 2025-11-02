@@ -1,4 +1,4 @@
-import "/src/Components/Comics/Banner/Banner.sass";
+import "/src/components/comics/banner/Banner.sass";
 
 function Banner() {
   return (

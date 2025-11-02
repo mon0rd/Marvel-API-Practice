@@ -1,4 +1,4 @@
-import "/src/Components/Header/Header.sass";
+import "/src/components/header/Header.sass";
 
 function Header() {
   return (

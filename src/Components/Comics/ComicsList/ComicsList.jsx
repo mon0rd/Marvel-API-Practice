@@ -1,6 +1,6 @@
 // import { useState } from "react";
 import { Component } from "react";
-import "/src/Components/Comics/ComicsList/ComicsList.sass";
+import "/src/components/comics/comicsList/ComicsList.sass";
 
 class ComicsList extends Component {
   constructor(props) {

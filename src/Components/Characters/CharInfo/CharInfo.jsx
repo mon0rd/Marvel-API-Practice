@@ -1,5 +1,6 @@
 import { Component } from "react";
-import "/src/Components/Characters/CharInfo/CharInfo.sass";
+import "/src/components/characters/charInfo/CharInfo.sass";
+import CharInfoPlaceholder from "/src/components/characters/charInfoPlaceholder/CharInfoPlaceholder.jsx";
 
 class CharInfo extends Component {
   formComicsList = () => {
@@ -14,11 +15,8 @@ class CharInfo extends Component {
     }
   };
 
-  render() {
+  formCharInfo = () => {
     const { name, text, thumbnail, homepage, wiki } = this.props.selectedChar;
-
-    let comics = this.formComicsList();
-
     return (
       <aside className="CharInfo">
         <div className="CharInfo_header">
@@ -35,9 +33,18 @@ class CharInfo extends Component {
         </div>
         <div className="CharInfo_text">{text}</div>
         <h3 className="title_h3">Comics:</h3>
-        <ul className="CharInfo_comics"> {comics}</ul>
+        <ul className="CharInfo_comics">{this.formComicsList()}</ul>
       </aside>
     );
+  };
+
+  render() {
+    let charInfo = <CharInfoPlaceholder />;
+    if (this.props.selectedChar) {
+      charInfo = this.formCharInfo();
+    }
+
+    return charInfo;
   }
 }
 

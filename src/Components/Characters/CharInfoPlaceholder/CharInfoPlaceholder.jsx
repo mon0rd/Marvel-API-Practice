@@ -1,4 +1,4 @@
-import "/src/Components/Characters/CharInfoPlaceholder/CharInfoPlaceholder.sass";
+import "/src/components/characters/charInfoPlaceholder/CharInfoPlaceholder.sass";
 
 function CharInfoPlaceholder() {
   return (
