@@ -23,10 +23,10 @@ class CharInfo extends Component {
           <img src={thumbnail} alt={name} className="CharInfo_avatar" />
           <div className="CharInfo_header_wrapper">
             <h2 className="title_h2">{name}</h2>
-            <a href={homepage}>
+            <a tabIndex={-1} href={homepage}>
               <button className="red_btn">HOMEPAGE</button>
             </a>
-            <a href={wiki}>
+            <a tabIndex={-1} href={wiki}>
               <button className="gray_btn">WIKI</button>
             </a>
           </div>

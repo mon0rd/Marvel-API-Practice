@@ -15,13 +15,15 @@ class RandomChar extends Component {
 
   updateChar = () => {
     if (this.state.error || this.state.char.name) {
-      const id = Math.floor(Math.random() * (19 - 1 + 1) + 1);
+      let id = Math.floor(Math.random() * (20 - 0) + 0);
+      if (this.state.char.id === id + 1) {
+        return this.updateChar();
+      }
       this.setState({ char: {}, error: false });
       this.marvelService
         .getCharacter(id)
         .then(this.onCharLoaded)
         .catch(this.onError);
-      // console.log(this.marvelService.getCharacter(id));
     }
   };
 
@@ -60,10 +62,10 @@ class RandomChar extends Component {
               {text ? text : "Description missing"}
             </div>
             <div className="Char_btns">
-              <a href={homepage}>
+              <a tabIndex={-1} href={homepage}>
                 <button className="red_btn">HOMEPAGE</button>
               </a>
-              <a href={wiki}>
+              <a tabIndex={-1} href={wiki}>
                 <button className="gray_btn">WIKI</button>
               </a>
             </div>

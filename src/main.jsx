@@ -11,11 +11,11 @@ import ComicsApp from "/src/Components/Comics/ComicsApp/ComicsApp.jsx";
 // marvelService.getCharacter(1011005).then((res) => console.log(res));
 
 createRoot(document.getElementById("root")).render(
-  // <StrictMode>
-  <div className="wrapper">
-    <Header />
-    <CharactersApp />
-    {/* <ComicsApp /> */}
-  </div>
-  // </StrictMode>
+  <StrictMode>
+    <div className="wrapper">
+      <Header />
+      <CharactersApp />
+      {/* <ComicsApp /> */}
+    </div>
+  </StrictMode>
 );

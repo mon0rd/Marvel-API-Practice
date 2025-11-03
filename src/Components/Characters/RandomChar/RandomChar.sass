@@ -35,6 +35,12 @@
             justify-content: space-between
             width: 232px
             margin-top: 13px
+            a
+                clip-path: polygon(91px 38px, 101px 28px, 101px 0px, 101px 0px, 10px 0px, 0px 10px, 0px 38px, 0px 38px)
+                transition: all 0.2s
+                &:hover
+                    clip-path: polygon(101px 38px, 101px 38px, 101px 10px, 91px 0px, 0px 0px, 0px 0px, 0px 28px, 10px 38px)
+                    transform: translateY(-2px)
     .TryIt
         display: flex
         flex-direction: column

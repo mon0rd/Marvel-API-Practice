@@ -1,11 +1,13 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import "/src/components/characters/charList/CharList.sass";
 import MarvelService from "/src/services/MarvelService.jsx";
 
 class CharList extends Component {
   state = {
+    // charlist: [], //nostrictMode
     offset: 0,
     error: false,
+    expanding: false,
   };
 
   marvelService = new MarvelService();
@@ -15,29 +17,39 @@ class CharList extends Component {
   }
 
   updateCharList = () => {
-    this.marvelService
-      .getAllCharacters(this.state.offset)
-      .then(this.onCharListLoaded)
-      .catch(this.onError);
-    this.setState({ offset: this.state.offset + 9 });
+    if (!this.state.expanding || this.state.error) {
+      this.setState({
+        error: false,
+        expanding: true,
+      });
+      this.marvelService
+        .getAllCharacters(this.state.offset)
+        .then(this.onCharListLoaded)
+        .catch(this.onError);
+    }
   };
 
-  onCharListLoaded = (charlist) => {
-    // if (!this.state.charlist) {
-    //   this.setState({ charlist });
-    // }
-    // else if (this.state.charlist[0].id !== charlist[0].id) {//strictmode
-    // else {
-    this.setState({
-      charlist: this.state.charlist
-        ? [...this.state.charlist, ...charlist]
-        : charlist,
-    });
-    // }
+  onCharListLoaded = (newCharlist) => {
+    this.setState(({ offset, charlist }) => ({
+      charlist:
+        charlist && charlist[0].id !== newCharlist[0].id
+          ? [...charlist, ...newCharlist]
+          : newCharlist,
+      loadBtn: newCharlist.length < 9 ? false : true,
+      offset:
+        charlist && charlist[0].id == newCharlist[0].id ? offset : offset + 9,
+      expanding: false,
+    }));
 
-    if (!this.props.showDecor) {
-      this.props.showDecor(true);
-    }
+    //noStrictMode
+    // this.setState(({ charlist }) => ({
+    //   charlist: [...charlist, ...newCharlist],
+    //   loadBtn: newCharlist.length < 9 ? false : true,
+    //   offset: this.state.offset + 9,
+    //   expanding: false,
+    // }));
+
+    this.props.showDecor(true);
   };
 
   formRenderedList = () => {
@@ -51,7 +63,14 @@ class CharList extends Component {
       }
       return (
         <div
+          tabIndex={0}
           onClick={() => this.props.onCharSelect(element)}
+          onKeyDown={(e) => {
+            if (e.key === " " || e.key === "Space" || e.key === "Enter") {
+              e.preventDefault();
+              this.props.onCharSelect(element);
+            }
+          }}
           key={element.id}
           className={classname}>
           <img
@@ -67,11 +86,11 @@ class CharList extends Component {
 
   onError = () => {
     this.setState({ error: true });
-    this.props.showDecor(true);
+    this.props.showDecor(false);
   };
 
   render() {
-    const { charlist, error } = this.state;
+    const { charlist, error, loadBtn, expanding, offset } = this.state;
 
     return (
       <div className="CharList">
@@ -83,13 +102,22 @@ class CharList extends Component {
           <>
             <img
               src="/src/assets/error.gif"
-              style={{ width: "100%" }}
+              style={{ width: "40%", margin: "auto" }}
               alt="error"
             />
-            <button className="red_wide_btn">reload</button>
+            <button
+              onClick={() => this.updateCharList()}
+              className="red_wide_btn">
+              reload
+            </button>
           </>
         ) : null}
-        {charlist ? (
+        {charlist && expanding ? (
+          <div
+            style={{ marginTop: "35px", height: "60px", width: "60px" }}
+            className="spinner"></div>
+        ) : null}
+        {charlist && loadBtn && !expanding && offset !== 20 ? (
           <button
             onClick={() => this.updateCharList()}
             className="red_wide_btn">
