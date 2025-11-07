@@ -1,49 +1,42 @@
-import { Component } from "react";
+import { useState } from "react";
 import "/src/components/characters/charactersApp/CharactersApp.sass";
 
 import RandomChar from "/src/components/characters/randomChar/RandomChar.jsx";
 import CharList from "/src/components/characters/charList/CharList.jsx";
 import CharInfo from "/src/components/characters/charInfo/CharInfo.jsx";
 
-class CharactersApp extends Component {
-  state = { selectedChar: null, decor: null };
+const CharactersApp = () => {
+  const [selectedChar, setSelectedChar] = useState(),
+    [decor, setDecor] = useState();
 
-  onCharSelect = (element) => {
-    if (this.state.selectedChar && element.id === this.state.selectedChar.id) {
-      this.setState({ selectedChar: null });
-    } else {
-      this.setState({ selectedChar: element });
-    }
+  const onCharSelect = (elem) => {
+    setSelectedChar(selectedChar && elem.id === selectedChar.id ? null : elem);
   };
 
-  showDecor = (decor) => {
-    if (!this.state.decor) {
-      this.setState({ decor });
-    }
+  const showDecor = (decor) => {
+    setDecor(decor);
   };
 
-  render() {
-    return (
-      <div className="CharactersApp">
-        <RandomChar />
-        <div className="Char_wrapper">
-          <CharList
-            onCharSelect={this.onCharSelect}
-            selectedChar={this.state.selectedChar}
-            showDecor={this.showDecor}
+  return (
+    <div className="CharactersApp">
+      <RandomChar />
+      <div className="Char_wrapper">
+        <CharList
+          onCharSelect={onCharSelect}
+          selectedChar={selectedChar}
+          showDecor={showDecor}
+        />
+        <CharInfo selectedChar={selectedChar} />
+        {decor ? (
+          <img
+            src="/src/assets/Characters/img/png/bg_vision.png"
+            alt="vision"
+            className="Characters_decor"
           />
-          <CharInfo selectedChar={this.state.selectedChar} />
-          {this.state.decor ? (
-            <img
-              src="/src/assets/Characters/img/png/bg_vision.png"
-              alt="vision"
-              className="Characters_decor"
-            />
-          ) : null}
-        </div>
+        ) : null}
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default CharactersApp;

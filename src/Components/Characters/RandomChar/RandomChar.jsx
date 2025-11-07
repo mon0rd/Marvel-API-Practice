@@ -1,99 +1,104 @@
 import "/src/components/characters/randomChar/RandomChar.sass";
-import { Component } from "react";
+import { useState, useEffect, useRef } from "react";
 import MarvelService from "/src/services/MarvelService.jsx";
 
-class RandomChar extends Component {
-  state = {
-    char: { name: "123" },
-  };
+const RandomChar = () => {
+  const [char, setChar] = useState({ name: "123" }),
+    [error, setError] = useState(),
+    intervalRef = useRef(null);
 
-  marvelService = new MarvelService();
+  const marvelService = new MarvelService();
 
-  componentDidMount() {
-    this.updateChar();
-  }
+  useEffect(() => {
+    updateChar();
+  }, []);
 
-  updateChar = () => {
-    if (this.state.error || this.state.char.name) {
-      let id = Math.floor(Math.random() * (20 - 0) + 0);
-      if (this.state.char.id === id + 1) {
-        return this.updateChar();
-      }
-      this.setState({ char: {}, error: false });
-      this.marvelService
-        .getCharacter(id)
-        .then(this.onCharLoaded)
-        .catch(this.onError);
+  const updateChar = () => {
+    let id = Math.floor(Math.random() * (15 - 13) + 13);
+    console.log(id, char.id);
+    if (char && char.id === id + 1) {
+      console.log(id, char.id);
+      return updateChar();
+    }
+    if (error || char.name) {
+      setChar({});
+      setError(false);
+      marvelService.getCharacter(id).then(onCharLoaded).catch(onError);
     }
   };
 
-  onCharLoaded = (char) => {
-    this.setState({ char });
+  const onCharLoaded = (character) => {
+    clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(updateChar, 4000);
+    setChar(character);
   };
 
-  onError = () => {
-    this.setState({ error: true });
+  const onError = () => {
+    setError(true);
   };
 
-  render() {
-    const {
-      char: { name, text, thumbnail, homepage, wiki },
-      error,
-    } = this.state;
-    let randomChar = <div className="spinner"></div>;
+  // let name, text, thumbnail, homepage, wiki;
 
-    if (error) {
-      randomChar = (
-        <>
-          <img
-            src="/src/assets/error.gif"
-            style={{ width: "100%" }}
-            alt="error"
-          />
-        </>
-      );
-    } else if (thumbnail) {
-      randomChar = (
-        <>
-          <img src={thumbnail} alt={name} />
-          <div className="Char_descr">
-            <h2 className="title_h2">{name}</h2>
-            <div className="Char_text">
-              {text ? text : "Description missing"}
-            </div>
-            <div className="Char_btns">
-              <a tabIndex={-1} href={homepage}>
-                <button className="red_btn">HOMEPAGE</button>
-              </a>
-              <a tabIndex={-1} href={wiki}>
-                <button className="gray_btn">WIKI</button>
-              </a>
-            </div>
+  // if (char.id) {
+  //   console.log(char);
+  //   let {
+  //     char: { name, text, thumbnail, homepage, wiki },
+  //   } = char;
+  // }
+
+  let randomChar = <div className="spinner"></div>;
+
+  if (error) {
+    randomChar = (
+      <>
+        <img
+          src="/src/assets/error.gif"
+          style={{ width: "100%" }}
+          alt="error"
+        />
+      </>
+    );
+  } else if (char.thumbnail) {
+    randomChar = (
+      <>
+        <img src={char.thumbnail} alt={char.name} />
+        <div className="Char_descr">
+          <h2 className="title_h2">{char.name}</h2>
+          <div className="Char_text">
+            {char.text ? char.text : "Description missing"}
           </div>
-        </>
-      );
-    }
-
-    return (
-      <div className="RandomChar">
-        <div className="Char">{randomChar}</div>
-        <div className="TryIt">
-          <span>
-            Random character for today! <br />
-            Do you want to get to know him better?
-          </span>
-          <span>Or choose another one</span>
-          <button onClick={this.updateChar} className="red_btn">
-            try it
-          </button>
-          <img
-            src="/src/assets/Characters/img/png/mjolnir_shield.png"
-            alt="mjolnir_shield"
-          />
+          <div className="Char_btns">
+            <a tabIndex={-1} href={char.homepage}>
+              <button className="red_btn">HOMEPAGE</button>
+            </a>
+            <a tabIndex={-1} href={char.wiki}>
+              <button className="gray_btn">WIKI</button>
+            </a>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
-}
+
+  return (
+    <div className="RandomChar">
+      <div className="Char">{randomChar}</div>
+      <div className="TryIt">
+        <span>
+          Random character for today! <br />
+          Do you want to get to know him better?
+        </span>
+        <span>Or choose another one</span>
+        <button onClick={updateChar} className="red_btn">
+          try it
+        </button>
+        <img
+          src="/src/assets/Characters/img/png/mjolnir_shield.png"
+          alt="mjolnir_shield"
+        />
+      </div>
+    </div>
+  );
+};
 
 export default RandomChar;

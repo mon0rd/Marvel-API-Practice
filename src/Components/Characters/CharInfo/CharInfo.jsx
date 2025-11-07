@@ -1,11 +1,10 @@
-import { Component } from "react";
 import "/src/components/characters/charInfo/CharInfo.sass";
 import CharInfoPlaceholder from "/src/components/characters/charInfoPlaceholder/CharInfoPlaceholder.jsx";
 
-class CharInfo extends Component {
-  formComicsList = () => {
-    if (this.props.selectedChar.comics) {
-      return this.props.selectedChar.comics.items.map((element, i) => {
+const CharInfo = (props)=> {
+  const formComicsList = () => {
+    if (props.selectedChar.comics) {
+      return props.selectedChar.comics.items.map((element, i) => {
         return (
           <li key={i} className="CharInfo_comics_item">
             {element}
@@ -15,8 +14,8 @@ class CharInfo extends Component {
     }
   };
 
-  formCharInfo = () => {
-    const { name, text, thumbnail, homepage, wiki } = this.props.selectedChar;
+  const formCharInfo = () => {
+    const { name, text, thumbnail, homepage, wiki } = props.selectedChar;
     return (
       <aside className="CharInfo">
         <div className="CharInfo_header">
@@ -33,19 +32,18 @@ class CharInfo extends Component {
         </div>
         <div className="CharInfo_text">{text}</div>
         <h3 className="title_h3">Comics:</h3>
-        <ul className="CharInfo_comics">{this.formComicsList()}</ul>
+        <ul className="CharInfo_comics">{formComicsList()}</ul>
       </aside>
     );
   };
 
-  render() {
     let charInfo = <CharInfoPlaceholder />;
-    if (this.props.selectedChar) {
-      charInfo = this.formCharInfo();
+    if (props.selectedChar) {
+      charInfo = formCharInfo();
     }
 
     return charInfo;
-  }
+  
 }
 
 export default CharInfo;
