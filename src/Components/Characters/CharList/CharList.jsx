@@ -1,21 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import "/src/components/characters/charList/CharList.sass";
 import MarvelService from "/src/services/MarvelService.jsx";
+import Error from "/src/components/error/Error.jsx";
+import Spinner from "/src/components/spinner/Spinner.jsx";
 
 const CharList = (props) => {
-  const [charlist, setCharlist] = useState(null),
+  const [charlist, setCharlist] = useState([]),
     [offset, setOffset] = useState(0),
     [error, setError] = useState(false),
     [expanding, setExpanding] = useState(false),
     [loadBtn, setLoadBtn] = useState(false);
 
-  const marvelService = new MarvelService();
+  const marvelService = useMemo(() => new MarvelService(), []);
 
   useEffect(() => {
     updateCharList();
   }, []);
 
-  const updateCharList = () => {
+  const updateCharList = useCallback(() => {
     if (!expanding || error) {
       setError(false);
       setExpanding(true);
@@ -24,15 +26,22 @@ const CharList = (props) => {
         .then(onCharListLoaded)
         .catch(onError);
     }
-  };
+  }, [marvelService, offset]);
 
   const onCharListLoaded = (newCharlist) => {
     setCharlist(charlist ? [...charlist, ...newCharlist] : newCharlist);
     setOffset(offset + 9);
     setExpanding(false);
-    setLoadBtn(newCharlist.length < 9 ? false : true);
+    setLoadBtn(newCharlist.length === 9);
 
     props.showDecor(true);
+  };
+
+  const handleKeySelect = (e, element) => {
+    if ([" ", "Space", "Enter"].includes(e.key)) {
+      e.preventDefault();
+      props.onCharSelect(element);
+    }
   };
 
   const formRenderedList = () => {
@@ -45,12 +54,7 @@ const CharList = (props) => {
         <div
           tabIndex={0}
           onClick={() => props.onCharSelect(element)}
-          onKeyDown={(e) => {
-            if (e.key === " " || e.key === "Space" || e.key === "Enter") {
-              e.preventDefault();
-              props.onCharSelect(element);
-            }
-          }}
+          onKeyDown={(e) => handleKeySelect(e, element)}
           key={element.id}
           className={classname}>
           <img
@@ -72,33 +76,52 @@ const CharList = (props) => {
 
   return (
     <div className="CharList">
-      <div className="CharList_wrapper">
-        {charlist ? formRenderedList() : null}
-      </div>
-      {!charlist && !error ? <div className="spinner"></div> : null}
-      {error ? (
+      <div className="CharList_wrapper">{formRenderedList()}</div>
+      <View
+        charlist={charlist}
+        loadBtn={loadBtn}
+        expanding={expanding}
+        offset={offset}
+        error={error}
+        updateCharList={() => updateCharList()}
+      />
+    </div>
+  );
+};
+
+const View = ({
+  charlist,
+  error,
+  loadBtn,
+  expanding,
+  offset,
+  updateCharList,
+}) => {
+  const showLoadButton =
+      charlist.length > 0 && loadBtn && !expanding && offset !== 20,
+    emptyListSpinner = charlist.length === 0 && !error,
+    expandingSpinner = charlist.length > 0 && expanding;
+
+  return (
+    <>
+      {emptyListSpinner && <Spinner />}
+      {error && (
         <>
-          <img
-            src="/src/assets/error.gif"
-            style={{ width: "40%", margin: "auto" }}
-            alt="error"
-          />
-          <button onClick={() => updateCharList()} className="red_wide_btn">
+          <Error style={{ width: "40%", margin: "auto" }} />
+          <button onClick={updateCharList} className="red_wide_btn">
             reload
           </button>
         </>
-      ) : null}
-      {charlist && expanding ? (
-        <div
-          style={{ marginTop: "35px", height: "60px", width: "60px" }}
-          className="spinner"></div>
-      ) : null}
-      {charlist && loadBtn && !expanding && offset !== 20 ? (
-        <button onClick={() => updateCharList()} className="red_wide_btn">
-          load more
+      )}
+      {expandingSpinner && (
+        <Spinner style={{ marginTop: "35px", height: "60px", width: "60px" }} />
+      )}
+      {showLoadButton && (
+        <button onClick={updateCharList} className="red_wide_btn">
+          Load more
         </button>
-      ) : null}
-    </div>
+      )}
+    </>
   );
 };
 
