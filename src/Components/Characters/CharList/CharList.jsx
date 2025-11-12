@@ -1,17 +1,15 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import "/src/components/characters/charList/CharList.sass";
-import MarvelService from "/src/services/MarvelService.jsx";
+import useMarvelService from "/src/services/MarvelService.jsx";
 import Error from "/src/components/error/Error.jsx";
 import Spinner from "/src/components/spinner/Spinner.jsx";
 
 const CharList = (props) => {
   const [charlist, setCharlist] = useState([]),
     [offset, setOffset] = useState(0),
-    [error, setError] = useState(false),
-    [expanding, setExpanding] = useState(false),
-    [loadBtn, setLoadBtn] = useState(false);
+    [expanding, setExpanding] = useState(false);
 
-  const marvelService = useMemo(() => new MarvelService(), []);
+  const { error, clearError, getAllCharacters } = useMarvelService();
 
   useEffect(() => {
     updateCharList();
@@ -19,20 +17,16 @@ const CharList = (props) => {
 
   const updateCharList = useCallback(() => {
     if (!expanding || error) {
-      setError(false);
+      clearError();
       setExpanding(true);
-      marvelService
-        .getAllCharacters(offset)
-        .then(onCharListLoaded)
-        .catch(onError);
+      getAllCharacters(offset).then(onCharListLoaded).catch(onError);
     }
-  }, [marvelService, offset]);
+  }, [getAllCharacters, offset]);
 
   const onCharListLoaded = (newCharlist) => {
     setCharlist(charlist ? [...charlist, ...newCharlist] : newCharlist);
     setOffset(offset + 9);
     setExpanding(false);
-    setLoadBtn(newCharlist.length === 9);
 
     props.showDecor(true);
   };
@@ -69,7 +63,6 @@ const CharList = (props) => {
   };
 
   const onError = () => {
-    setError(true);
     setExpanding(false);
     props.showDecor(false);
   };
@@ -79,7 +72,6 @@ const CharList = (props) => {
       <div className="CharList_wrapper">{formRenderedList()}</div>
       <View
         charlist={charlist}
-        loadBtn={loadBtn}
         expanding={expanding}
         offset={offset}
         error={error}
@@ -89,16 +81,13 @@ const CharList = (props) => {
   );
 };
 
-const View = ({
-  charlist,
-  error,
-  loadBtn,
-  expanding,
-  offset,
-  updateCharList,
-}) => {
+const View = ({ charlist, error, expanding, offset, updateCharList }) => {
   const showLoadButton =
-      charlist.length > 0 && loadBtn && !expanding && offset !== 20,
+      charlist.length > 0 &&
+      charlist.length % 9 === 0 &&
+      !error &&
+      !expanding &&
+      offset !== 20,
     emptyListSpinner = charlist.length === 0 && !error,
     expandingSpinner = charlist.length > 0 && expanding;
 

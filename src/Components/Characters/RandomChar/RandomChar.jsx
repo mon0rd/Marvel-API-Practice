@@ -1,17 +1,16 @@
 import "/src/components/characters/randomChar/RandomChar.sass";
-import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import MarvelService from "/src/services/MarvelService.jsx";
+import { useState, useEffect, useRef, useCallback } from "react";
+import useMarvelService from "/src/services/MarvelService.jsx";
 import Error from "/src/components/error/Error.jsx";
 import Spinner from "/src/components/spinner/Spinner.jsx";
 
 const RandomChar = () => {
   const [char, setChar] = useState({ name: "123" }),
-    [error, setError] = useState(),
     intervalRef = useRef(null);
 
-  const marvelService = useMemo(() => new MarvelService(), []);
+  const { error, clearError, getCharacter } = useMarvelService();
 
-  const updateChar = useCallback(() => {
+  const updateChar = useCallback(async () => {
     let id;
     do {
       id = Math.floor(Math.random() * (20 - 0 + 1) + 0);
@@ -19,20 +18,13 @@ const RandomChar = () => {
 
     if (error || char.name) {
       setChar({});
-      setError(false);
-      marvelService
-        .getCharacter(id - 1)
-        .then(onCharLoaded)
-        .catch(onError);
+      clearError();
+      getCharacter(id - 1).then(onCharLoaded);
     }
-  }, [char.id, marvelService]);
+  }, [char.id, getCharacter]);
 
   const onCharLoaded = (character) => {
     setChar(character);
-  };
-
-  const onError = () => {
-    setError(true);
   };
 
   const startInterval = useCallback(() => {

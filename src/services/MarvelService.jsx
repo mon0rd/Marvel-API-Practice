@@ -1,30 +1,25 @@
-class MarvelService {
-  _apiBase = "https://marvel-server-zeta.vercel.app/";
-  _apiKey = "apikey=d4eecb0c66dedbfae4eab45d312fc1df";
-  getResource = async (url) => {
-    let res = await fetch(url);
-    if (!res.ok) {
-      throw new Error(`Could not fetch ${url}, status: ${res.status}`);
-    }
+import useHttp from "/src/components/hooks/useHttp.jsx";
 
-    return await res.json();
-  };
+const useMarvelService = () => {
+  const _apiBase = "https://marvel-server-zeta.vercel.app/";
+  const _apiKey = "apikey=d4eecb0c66dedbfae4eab45d312fc1df";
+  const { error, clearError, getResource } = useHttp();
 
-  getAllCharacters = async (offset) => {
-    const res = await this.getResource(
-      `${this._apiBase}characters?limit=9&offset=${offset}&${this._apiKey}`
+  const getAllCharacters = async (offset) => {
+    const res = await getResource(
+      `${_apiBase}characters?limit=9&offset=${offset}&${_apiKey}`
     );
-    return res.data.results.map(this._transormCharacter);
+    return res.data.results.map(_transormCharacter);
   };
 
-  getCharacter = async (offset) => {
-    const res = await this.getResource(
-      `${this._apiBase}characters?limit=1&offset=${offset}&${this._apiKey}`
+  const getCharacter = async (offset) => {
+    const res = await getResource(
+      `${_apiBase}characters?limit=1&offset=${offset}&${_apiKey}`
     );
-    return this._transormCharacter(res.data.results[0]);
+    return _transormCharacter(res.data.results[0]);
   };
 
-  _transormCharacter = (char) => {
+  const _transormCharacter = (char) => {
     return {
       name: char.name,
       text: char.description,
@@ -35,6 +30,7 @@ class MarvelService {
       id: char.id,
     };
   };
-}
+  return { error, clearError, getResource, getAllCharacters, getCharacter };
+};
 
-export default MarvelService;
+export default useMarvelService;
