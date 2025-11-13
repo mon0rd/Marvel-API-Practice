@@ -1,20 +1,22 @@
 import { useState, useCallback } from "react";
 
 const useHttp = () => {
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null),
+    [expanding, setExpanding] = useState(false);
   const getResource = useCallback(
     async (
-      url
+      url,
       //CORS
-      //   method = "GET",
-      //   body = null,
-      //   headers = { "Content-Type": "application/json" }
+      method = "GET",
+      body = null,
+      headers
+      // = { "Content-Type": "application/json" }
     ) => {
       try {
         let res = await fetch(
-          url
+          url,
           //CORS
-          // , { method, body, headers }
+          { method, body, headers }
         );
         if (!res.ok) {
           throw new Error(`Could not fetch ${url}, status: ${res.status}`);
@@ -36,7 +38,7 @@ const useHttp = () => {
     []
   );
   const clearError = useCallback(() => setError(null), []);
-  return { error, clearError, getResource };
+  return { error, clearError, expanding, setExpanding, getResource };
 };
 
 export default useHttp;

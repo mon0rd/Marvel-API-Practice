@@ -5,11 +5,11 @@ import Error from "/src/components/error/Error.jsx";
 import Spinner from "/src/components/spinner/Spinner.jsx";
 
 const CharList = (props) => {
-  const [charlist, setCharlist] = useState([]),
-    [offset, setOffset] = useState(0),
-    [expanding, setExpanding] = useState(false);
+  const [charList, setCharList] = useState([]),
+    [offset, setOffset] = useState(0);
 
-  const { error, clearError, getAllCharacters } = useMarvelService();
+  const { error, clearError, expanding, setExpanding, getAllCharacters } =
+    useMarvelService();
 
   useEffect(() => {
     updateCharList();
@@ -19,12 +19,17 @@ const CharList = (props) => {
     if (!expanding || error) {
       clearError();
       setExpanding(true);
-      getAllCharacters(offset).then(onCharListLoaded).catch(onError);
+      getAllCharacters(offset)
+        .then(onCharListLoaded)
+        .catch(() => {
+          setExpanding(false);
+          props.showDecor(false);
+        });
     }
   }, [getAllCharacters, offset]);
 
-  const onCharListLoaded = (newCharlist) => {
-    setCharlist(charlist ? [...charlist, ...newCharlist] : newCharlist);
+  const onCharListLoaded = (newCharList) => {
+    setCharList(charList ? [...charList, ...newCharList] : newCharList);
     setOffset(offset + 9);
     setExpanding(false);
 
@@ -39,7 +44,7 @@ const CharList = (props) => {
   };
 
   const formRenderedList = () => {
-    return charlist.map((element) => {
+    return charList.map((element) => {
       let classname = "CharList_card";
       if (props.selectedChar && element.id === props.selectedChar.id) {
         classname = "CharList_card active";
@@ -71,7 +76,7 @@ const CharList = (props) => {
     <div className="CharList">
       <div className="CharList_wrapper">{formRenderedList()}</div>
       <View
-        charlist={charlist}
+        charList={charList}
         expanding={expanding}
         offset={offset}
         error={error}
@@ -81,22 +86,18 @@ const CharList = (props) => {
   );
 };
 
-const View = ({ charlist, error, expanding, offset, updateCharList }) => {
+const View = ({ charList, error, expanding, updateCharList }) => {
   const showLoadButton =
-      charlist.length > 0 &&
-      charlist.length % 9 === 0 &&
-      !error &&
-      !expanding &&
-      offset !== 20,
-    emptyListSpinner = charlist.length === 0 && !error,
-    expandingSpinner = charlist.length > 0 && expanding;
+      charList.length > 0 && charList.length % 9 === 0 && !error && !expanding,
+    emptyListSpinner = charList.length === 0 && !error,
+    expandingSpinner = charList.length > 0 && expanding;
 
   return (
     <>
       {emptyListSpinner && <Spinner />}
       {error && (
         <>
-          <Error style={{ width: "40%", margin: "auto" }} />
+          <Error style={{ width: "40%", margin: "auto", marginTop: "-30px" }} />
           <button onClick={updateCharList} className="red_wide_btn">
             reload
           </button>

@@ -16,9 +16,9 @@ class ComicsApp extends Component {
     return (
       <div className="ComicsApp">
         <Banner />
-        {/* <ComicsList /> */}
+        <ComicsList />
         {/* <ComicsItem /> */}
-        <ComicsCharPage />
+        {/* <ComicsCharPage /> */}
       </div>
     );
   }
