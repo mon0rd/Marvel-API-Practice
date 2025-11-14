@@ -50,7 +50,7 @@ const CharList = (props) => {
         classname = "CharList_card active";
       }
       return (
-        <div
+        <li
           tabIndex={0}
           onClick={() => props.onCharSelect(element)}
           onKeyDown={(e) => handleKeySelect(e, element)}
@@ -62,19 +62,14 @@ const CharList = (props) => {
             className="CharList_card_avatar"
           />
           <span className="CharList_card_name">{element.name}</span>
-        </div>
+        </li>
       );
     });
   };
 
-  const onError = () => {
-    setExpanding(false);
-    props.showDecor(false);
-  };
-
   return (
     <div className="CharList">
-      <div className="CharList_wrapper">{formRenderedList()}</div>
+      <ul className="CharList_wrapper">{formRenderedList()}</ul>
       <View
         charList={charList}
         expanding={expanding}

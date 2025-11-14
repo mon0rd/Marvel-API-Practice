@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { Link, useNavigate } from "react-router";
 import "/src/components/comics/comicsList/ComicsList.sass";
 import useMarvelService from "/src/services/MarvelService.jsx";
 import Error from "/src/components/error/Error.jsx";
@@ -6,7 +7,9 @@ import Spinner from "/src/components/spinner/Spinner.jsx";
 
 const ComicsList = () => {
   const [comicsList, setComicsList] = useState([]),
-    [offset, setOffset] = useState(0);
+    [offset, setOffset] = useState(0),
+    navigate = useNavigate();
+
 
   const { error, clearError, expanding, setExpanding, getAllComics } =
     useMarvelService();
@@ -36,35 +39,40 @@ const ComicsList = () => {
   const handleKeySelect = (e, element) => {
     if ([" ", "Space", "Enter"].includes(e.key)) {
       e.preventDefault();
-      console.log(element);
-      // props.onCharSelect(element);
-    } else if (e.type === "click") {
-      console.log(element);
+      navigate(`${element.id}`);
     }
   };
 
   const formRenderedList = () => {
     return comicsList.map((element) => {
       return (
-        <div className="ComicsList_card" key={element.id}>
-          <img
+        <li className="ComicsList_item" key={element.id}>
+          <Link
+            to={`${element.id}`}
             tabIndex={0}
-            onClick={(e) => handleKeySelect(e, element)}
-            onKeyDown={(e) => handleKeySelect(e, element)}
-            src={element.thumbnail}
-            alt={element.title}
-            className="ComicsList_card_avatar"
-          />
-          <span className="ComicsList_card_title">{element.title}</span>
-          <span className="ComicsList_card_price">{element.price}$</span>
-        </div>
+            onKeyDown={(e) => handleKeySelect(e, element)}>
+            <img
+              src={element.thumbnail}
+              alt={element.title}
+              className="ComicsList_item_cover"
+            />
+          </Link>
+          <Link
+            to={`${element.id}`}
+            className="ComicsList_item_title"
+            onKeyDown={(e) => handleKeySelect(e, element)}>
+            {element.title}
+          </Link>
+
+          <span className="ComicsList_item_price">{element.price}$</span>
+        </li>
       );
     });
   };
 
   return (
     <div className="ComicsList">
-      <div className="ComicsList_wrapper">{formRenderedList()}</div>
+      <ul className="ComicsList_wrapper">{formRenderedList()}</ul>
       <View
         comicsList={comicsList}
         expanding={expanding}

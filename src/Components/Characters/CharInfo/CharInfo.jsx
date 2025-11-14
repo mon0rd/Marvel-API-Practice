@@ -1,7 +1,7 @@
 import "/src/components/characters/charInfo/CharInfo.sass";
 import CharInfoPlaceholder from "/src/components/characters/charInfoPlaceholder/CharInfoPlaceholder.jsx";
 
-const CharInfo = (props)=> {
+const CharInfo = (props) => {
   const formComicsList = () => {
     if (props.selectedChar.comics) {
       return props.selectedChar.comics.items.map((element, i) => {
@@ -22,10 +22,10 @@ const CharInfo = (props)=> {
           <img src={thumbnail} alt={name} className="CharInfo_avatar" />
           <div className="CharInfo_header_wrapper">
             <h2 className="title_h2">{name}</h2>
-            <a tabIndex={-1} href={homepage}>
+            <a tabIndex={-1} href={homepage} target="_blank">
               <button className="red_btn">HOMEPAGE</button>
             </a>
-            <a tabIndex={-1} href={wiki}>
+            <a tabIndex={-1} href={wiki} target="_blank">
               <button className="gray_btn">WIKI</button>
             </a>
           </div>
@@ -37,13 +37,12 @@ const CharInfo = (props)=> {
     );
   };
 
-    let charInfo = <CharInfoPlaceholder />;
-    if (props.selectedChar) {
-      charInfo = formCharInfo();
-    }
+  let charInfo = <CharInfoPlaceholder />;
+  if (props.selectedChar) {
+    charInfo = formCharInfo();
+  }
 
-    return charInfo;
-  
-}
+  return charInfo;
+};
 
 export default CharInfo;

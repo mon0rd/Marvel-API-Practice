@@ -1,4 +1,4 @@
-import useHttp from "/src/components/hooks/useHttp.jsx";
+import useHttp from "/src/hooks/useHttp.jsx";
 
 const useMarvelService = () => {
   const _apiBase = "https://marvel-server-zeta.vercel.app/";
@@ -26,6 +26,13 @@ const useMarvelService = () => {
     return res.data.results.map(_transormComics);
   };
 
+  const getComics = async (id) => {
+    const res = await getResource(
+      `${_apiBase}comics?limit=1&offset=${id}&${_apiKey}`
+    );
+    return _transormComics(res.data.results[0]);
+  };
+
   const _transormCharacter = (char) => {
     return {
       name: char.name,
@@ -43,9 +50,9 @@ const useMarvelService = () => {
       title: comics.title,
       text: comics.description,
       thumbnail: comics.thumbnail.path + "." + comics.thumbnail.extension,
-      pageCount: comics.pageCount,
-      lang: comics.textObjects.languages,
-      price: comics.prices[0].price,
+      pageCount: comics.pageCount + " pages",
+      lang: "Language: " + comics.textObjects.languages,
+      price: comics.prices[0].price + "$",
       id: comics.id,
     };
   };
@@ -59,6 +66,7 @@ const useMarvelService = () => {
     getAllCharacters,
     getCharacter,
     getAllComics,
+    getComics,
   };
 };
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "/src/components/characters/charactersApp/CharactersApp.sass";
+import "/src/components/pages/charactersApp/CharactersApp.sass";
 
 import RandomChar from "/src/components/characters/randomChar/RandomChar.jsx";
 import CharList from "/src/components/characters/charList/CharList.jsx";

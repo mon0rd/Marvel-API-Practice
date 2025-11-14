@@ -85,10 +85,10 @@ const View = ({ char, error }) => {
         <h2 className="title_h2">{name}</h2>
         <div className="Char_text">{text || "Description missing"}</div>
         <div className="Char_btns">
-          <a tabIndex={-1} href={homepage}>
+          <a tabIndex={-1} href={homepage} target="_blank">
             <button className="red_btn">HOMEPAGE</button>
           </a>
-          <a tabIndex={-1} href={wiki}>
+          <a tabIndex={-1} href={wiki} target="_blank">
             <button className="gray_btn">WIKI</button>
           </a>
         </div>
