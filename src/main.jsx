@@ -4,9 +4,6 @@ import { BrowserRouter, Routes, Route } from "react-router";
 import "/src/styles/index.sass";
 
 import Header from "/src/components/header/Header.jsx";
-// import CharactersApp from "/src/components/pages/charactersApp/CharactersApp.jsx";
-// import ComicsApp from "/src/components/pages/comicsApp/ComicsApp.jsx";
-// import Page404 from "/src/components/pages/404/404.jsx";
 import Spinner from "/src/components/spinner/Spinner.jsx";
 
 const CharactersApp = lazy(() =>
