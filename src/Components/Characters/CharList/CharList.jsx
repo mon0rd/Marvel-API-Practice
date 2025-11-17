@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import "/src/components/characters/charList/CharList.sass";
 import useMarvelService from "/src/services/MarvelService.jsx";
@@ -7,17 +7,21 @@ import Spinner from "/src/components/spinner/Spinner.jsx";
 
 const CharList = (props) => {
   const [charList, setCharList] = useState([]),
-    [lastBatchIndex, setLastBatchIndex] = useState(0),
-    [offset, setOffset] = useState(0);
+    [offset, setOffset] = useState(0),
+    firstLoadRef = useRef(true),
+    lastBatchRef = useRef(0);
 
   const { error, clearError, expanding, setExpanding, getAllCharacters } =
     useMarvelService();
 
   useEffect(() => {
-    updateCharList();
+    if (firstLoadRef.current) {
+      firstLoadRef.current = false;
+      updateCharList();
+    }
   }, []);
 
-  const updateCharList = useCallback(() => {
+  const updateCharList = () => {
     if (!expanding || error) {
       clearError();
       setExpanding(true);
@@ -25,18 +29,18 @@ const CharList = (props) => {
         .then(onCharListLoaded)
         .catch(() => {
           setExpanding(false);
-          props.showDecor(false);
+          props.setDecor(false);
         });
     }
-  }, [getAllCharacters, offset]);
+  };
 
   const onCharListLoaded = (newCharList) => {
-    setCharList(charList ? [...charList, ...newCharList] : newCharList);
-    setOffset(offset + 9);
+    lastBatchRef.current = charList.length;
+    setCharList((prev) => [...prev, ...newCharList]);
+    setOffset((prev) => prev + 9);
     setExpanding(false);
-    setLastBatchIndex(charList.length);
 
-    props.showDecor(true);
+    props.setDecor(true);
   };
 
   const handleKeySelect = (e, element) => {
@@ -45,13 +49,14 @@ const CharList = (props) => {
       props.onCharSelect(element);
     }
   };
+
   const formRenderedList = () => {
     return charList.map((element, i) => {
       let classname = "CharList_card";
       if (props.selectedChar && element.id === props.selectedChar.id) {
         classname = "CharList_card active";
       }
-      const batchIndex = i >= lastBatchIndex ? i - lastBatchIndex : i;
+      const isNew = i >= lastBatchRef.current;
       return (
         <motion.li
           tabIndex={0}
@@ -59,11 +64,11 @@ const CharList = (props) => {
           onClick={() => props.onCharSelect(element)}
           onKeyDown={(e) => handleKeySelect(e, element)}
           className={classname}
-          initial={{ opacity: 0 }}
+          initial={isNew ? { opacity: 0 } : false}
           animate={{ opacity: 1 }}
           transition={{
             duration: 1.2,
-            delay: batchIndex * 0.15,
+            delay: isNew ? (i - lastBatchRef.current) * 0.15 : 0,
           }}>
           <img
             src={element.thumbnail}
@@ -78,9 +83,7 @@ const CharList = (props) => {
 
   return (
     <div className="CharList">
-      <motion.ul className="CharList_wrapper" initial="hidden" animate="show">
-        {formRenderedList()}
-      </motion.ul>
+      <motion.ul className="CharList_wrapper">{formRenderedList()}</motion.ul>
       <View
         charList={charList}
         expanding={expanding}

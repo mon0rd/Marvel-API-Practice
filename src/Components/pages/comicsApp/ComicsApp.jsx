@@ -1,9 +1,9 @@
 import "/src/components/pages/comicsApp/ComicsApp.sass";
-import { BrowserRouter, Routes, Route } from "react-router";
+import { Routes, Route } from "react-router";
 import Banner from "/src/components/comics/banner/Banner.jsx";
 import ComicsList from "/src/components/comics/comicsList/ComicsList.jsx";
 import ComicsItem from "/src/components/pages/comicsItem/ComicsItem.jsx";
-import ComicsCharPage from "/src/components/comics/comicsCharPage/ComicsCharPage.jsx";
+// import ComicsChar from "/src/components/pages/comicsChar/ComicsChar.jsx";
 
 const ComicsApp = () => {
   return (
@@ -11,9 +11,9 @@ const ComicsApp = () => {
       <Banner />
       <Routes>
         <Route path=":comicsId" element={<ComicsItem />} />
+        {/* <Route path="/characters/*" element={<ComicsChar />} /> */}
         <Route path="/" element={<ComicsList />} />
       </Routes>
-      {/* <ComicsCharPage /> */}
     </div>
   );
 };
