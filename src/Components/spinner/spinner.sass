@@ -2,15 +2,16 @@
 @use "/src/styles/base/variables.sass" as *
 
 .spinner
+  --bar-thickness: 6px
   width: 88px
   height: 88px
   display: grid
   border-radius: 50%
   -webkit-mask: radial-gradient(farthest-side, #0000 40%, $red 41%)
   mask: radial-gradient(farthest-side, #0000 40%, $red 41%)
-  background: linear-gradient(0deg,rgba(159, 0, 19, 0.5) 50%,rgba(159, 0, 19, 1) 0)center/7px 100%, linear-gradient(90deg, rgba(159, 0, 19, 0.25) 50%, rgba(159, 0, 19, 0.75) 0) center/100% 7px
+  background: linear-gradient(0deg,rgba(159, 0, 19, 0.5) 50%,rgba(159, 0, 19, 1) 0)center/var(--bar-thickness) 100%, linear-gradient(90deg, rgba(159, 0, 19, 0.25) 50%, rgba(159, 0, 19, 0.75) 0) center/100% var(--bar-thickness)
   background-repeat: no-repeat
-  animation: spinner-d3o0rx 1s infinite steps(12)
+  animation: spinner-d3o0rx 1.8s infinite steps(90)
 
 
 .spinner::before,
@@ -31,5 +32,3 @@
 @keyframes spinner-d3o0rx
   100% 
     transform: rotate(1turn)
-  
-
