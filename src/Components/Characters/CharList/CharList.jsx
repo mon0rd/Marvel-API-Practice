@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect, useContext } from "react";
+import { CacheContext } from "/src/context/CacheContext.jsx";
 import { motion } from "framer-motion";
 import "/src/components/characters/charList/CharList.sass";
 import useMarvelService from "/src/services/MarvelService.jsx";
@@ -6,18 +7,27 @@ import Error from "/src/components/error/Error.jsx";
 import Spinner from "/src/components/spinner/Spinner.jsx";
 
 const CharList = (props) => {
-  const [charList, setCharList] = useState([]),
-    [offset, setOffset] = useState(0),
-    firstLoadRef = useRef(true),
-    lastBatchRef = useRef(0);
+  const firstLoadRef = useRef(true);
+
+  const {
+    charList,
+    updateCache,
+    offset,
+    setOffset,
+    lastBatchIndex,
+    lastAnimatedIndex,
+    markAnimated,
+  } = useContext(CacheContext);
 
   const { error, clearError, expanding, setExpanding, getAllCharacters } =
     useMarvelService();
 
   useEffect(() => {
-    if (firstLoadRef.current) {
-      firstLoadRef.current = false;
-      updateCharList();
+    if (!charList[0]) {
+      if (firstLoadRef.current) {
+        firstLoadRef.current = false;
+        updateCharList();
+      }
     }
   }, []);
 
@@ -35,11 +45,9 @@ const CharList = (props) => {
   };
 
   const onCharListLoaded = (newCharList) => {
-    lastBatchRef.current = charList.length;
-    setCharList((prev) => [...prev, ...newCharList]);
-    setOffset((prev) => prev + 9);
+    updateCache(newCharList);
+    setOffset(offset + newCharList.length);
     setExpanding(false);
-
     props.setDecor(true);
   };
 
@@ -56,7 +64,7 @@ const CharList = (props) => {
       if (props.selectedChar && element.id === props.selectedChar.id) {
         classname = "CharList_card active";
       }
-      const isNew = i >= lastBatchRef.current;
+      const isNew = i >= lastBatchIndex && i > lastAnimatedIndex;
       return (
         <motion.li
           tabIndex={0}
@@ -64,13 +72,17 @@ const CharList = (props) => {
           onClick={() => props.onCharSelect(element)}
           onKeyDown={(e) => handleKeySelect(e, element)}
           className={classname}
-          initial={isNew ? { opacity: 0 } : false}
+          initial={isNew ? { opacity: 0 } : { opacity: 1 }}
           animate={{ opacity: 1 }}
           transition={{
             duration: 1.2,
-            delay: isNew ? (i - lastBatchRef.current) * 0.15 : 0,
+            delay: isNew ? (i - lastBatchIndex) * 0.15 : 0,
+          }}
+          onAnimationComplete={() => {
+            if (isNew) markAnimated(i);
           }}>
           <img
+            loading="lazy"
             src={element.thumbnail}
             alt={element.name}
             className="CharList_card_avatar"
@@ -112,7 +124,14 @@ const View = ({ charList, error, expanding, updateCharList }) => {
         </>
       )}
       {expandingSpinner && (
-        <Spinner style={{ marginTop: "35px", height: "60px", width: "60px" }} />
+        <Spinner
+          style={{
+            marginTop: "35px",
+            "--bar-thickness": "4px",
+            height: "60px",
+            width: "60px",
+          }}
+        />
       )}
       {showLoadButton && (
         <button onClick={updateCharList} className="red_wide_btn">

@@ -1,7 +1,8 @@
 import { StrictMode, lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import "/src/styles/index.sass";
+import { CacheProvider } from "/src/context/CacheProvider.jsx";
 
 import Header from "/src/components/header/Header.jsx";
 import Spinner from "/src/components/spinner/Spinner.jsx";
@@ -12,17 +13,18 @@ const CharactersApp = lazy(() =>
 const ComicsApp = lazy(() =>
   import("/src/components/pages/comicsApp/ComicsApp.jsx")
 );
+const CharPage = lazy(() =>
+  import("/src/components/pages/charPage/CharPage.jsx")
+);
 const Page404 = lazy(() => import("/src/components/pages/404/404.jsx"));
-// import MarvelService from "/src/services/MarvelService.jsx";
-// const marvelService = new MarvelService();
-// marvelService.getCharacter(1011005).then((res) => console.log(res));
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <div className="wrapper">
       <BrowserRouter>
         <Header />
-        <Suspense
+        <CacheProvider>
+          {/* <Suspense
           fallback={
             <Spinner
               style={{
@@ -31,13 +33,15 @@ createRoot(document.getElementById("root")).render(
                 margin: "100px  auto",
               }}
             />
-          }>
+          }> */}
           <Routes>
-            <Route path="/" element={<CharactersApp />} />
+            <Route path="/" element={<Navigate to="/characters" replace />} />
+            <Route index path="/characters/*" element={<CharactersApp />} />
             <Route path="/comics/*" element={<ComicsApp />} />
             <Route path="*" element={<Page404 />} />
           </Routes>
-        </Suspense>
+          {/* </Suspense> */}
+        </CacheProvider>
       </BrowserRouter>
     </div>
   </StrictMode>

@@ -1,4 +1,4 @@
-import { NavLink, Link, useNavigate } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import "/src/components/header/Header.sass";
 
 function Header() {
@@ -13,13 +13,18 @@ function Header() {
   return (
     <div className="Header">
       <h1 className="title_h1">
-        <Link to="/" onKeyDown={(e) => handleKeySelect(e, "/")}>
+        <button
+          onClick={() => {
+            window.location.href = "/";
+          }}>
           Marvel
-        </Link>{" "}
+        </button>{" "}
         information portal
       </h1>
       <div className="pages">
-        <NavLink to="/" onKeyDown={(e) => handleKeySelect(e, "/")}>
+        <NavLink
+          to="/characters"
+          onKeyDown={(e) => handleKeySelect(e, "/characters")}>
           Characters
         </NavLink>{" "}
         /{" "}

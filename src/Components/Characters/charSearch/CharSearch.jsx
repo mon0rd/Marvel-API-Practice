@@ -1,13 +1,15 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import "/src/components/characters/charSearch/CharSearch.sass";
 import useMarvelService from "/src/services/MarvelService.jsx";
-import { useForm } from "react-hook-form";
 import Spinner from "/src/components/spinner/Spinner.jsx";
 
 const CharSearch = (props) => {
   const [char, setChar] = useState(null);
+
   const { error, clearError, expanding, setExpanding, getCharacterByName } =
     useMarvelService();
+
   const {
     register,
     formState: { errors },
@@ -89,6 +91,7 @@ const CharSearch = (props) => {
                 There is! Visit {char.name} page?
               </div>
               <button
+                type="button"
                 onClick={() => props.onCharSearch(char)}
                 className="gray_btn">
                 to page
